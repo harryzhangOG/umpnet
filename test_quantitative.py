@@ -63,7 +63,7 @@ def calc_novel_state_ratio(visited):
             cnt += 1
             last_val = val
     ratio = cnt / len(visited)
-    
+
     return ratio
 
 
@@ -92,7 +92,7 @@ def main():
         for category_name in split_meta[category_type].keys():
             instance_type = 'test'
             pool_list.append((category_type, category_name, instance_type))
-    
+
     for category_type, category_name, instance_type in pool_list:
         run_test(args, model, category_type, category_name, instance_type)
 
@@ -216,7 +216,7 @@ def run_test(args, model, category_type, category_name, instance_type):
 
     if args.mode == 'exploration':
         for id in range(test_num):
-            if id in seq_with_correct_position:            
+            if id in seq_with_correct_position:
                 tot_step_num = max_step_num if results[f'sequence-{id}'] == -1 else results[f'sequence-{id}']
                 visited = list()
                 for step in range(1, tot_step_num + 1):
@@ -231,10 +231,26 @@ def run_test(args, model, category_type, category_name, instance_type):
         for id in range(test_num):
             if id in seq_with_correct_position:
                 final_result += results[f'dist2target-{id}-{max_step_num}'] / results[f'dist2target-{id}-{0}'] / test_num
+                result_dir = os.path.join('/home/harry/discriminative_embeddings/umpmetric_results_master', 'umpnet_official')
+                res_file = open(
+                    os.path.join(result_dir, "umpnet_all.txt"), "a"
+                )
+                number = results[f'dist2target-{id}-{max_step_num}'] / results[f'dist2target-{id}-{0}']
+                if number > 1.0:
+                    number = 1.0
+                print("{}: {}".format(category_name, number), file=res_file)
+                res_file.close()
             else:
                 final_result += 1.0 / test_num
+                result_dir = os.path.join('/home/harry/discriminative_embeddings/umpmetric_results_master', 'umpnet_official')
+                res_file = open(
+                    os.path.join(result_dir, "umpnet_all.txt"), "a"
+                )
+                print("{}: {}".format(category_name, 1.0), file=res_file)
+                res_file.close()
 
     print(f'{args.mode} results - {category_name}-{instance_type}: {final_result}')
+    print(final_result < 0.1)
 
 
 if __name__=='__main__':
