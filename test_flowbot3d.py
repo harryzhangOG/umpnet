@@ -2,7 +2,6 @@ import argparse
 import json
 import os
 import pickle
-
 import sys
 sys.path.append('/home/harry/discriminative_embeddings')
 
@@ -213,6 +212,7 @@ def run_test(model, category_type, category_name, instance_type):
         action = np.round(action).astype('int')
 
         observation, (reward, move_flag), done, info = sim.step([0, action[0], action[1]])
+        sim.save_render(sim.color_image, scene_state['instance_id'], result_dir)
 
         # terminate immediately if the position is wrong
         if done:
@@ -264,6 +264,7 @@ def run_test(model, category_type, category_name, instance_type):
                 )
 
             observation, (reward, move_flag), (reach_init, reach_boundary), info = sim.step([1, action[0], action[1], action[2]])
+            sim.save_render(sim.color_image, scene_state['instance_id'], result_dir)
 
             if True:
                 dist2target = info['dist2init']
@@ -279,15 +280,25 @@ def run_test(model, category_type, category_name, instance_type):
         i = scene_state['instance_id']
         print('Normalized Distance: {}'.format(results[f'dist2target-{id}-{max_step_num}'] / (1e-5+results[f'dist2target-{id}-{0}'])))
         if info['dist2init'] < 0.1:
-            if save_html:
-                save_html.write_html(
-                    os.path.join(succ_res_dir, "{}.html".format(i+'_'+str(id)))
+            if os.path.isfile(os.path.join(result_dir, "{}.mp4".format(i))):
+                shutil.move(
+                    os.path.join(result_dir, "{}.mp4".format(i)),
+                    os.path.join(succ_res_dir, "{}.mp4".format(i+'_'+str(id))),
                 )
+                if save_html:
+                    save_html.write_html(
+                        os.path.join(succ_res_dir, "{}.html".format(i+'_'+str(id)))
+                    )
         else:
-            if save_html:
-                save_html.write_html(
-                    os.path.join(fail_res_dir, "{}.html".format(i+'_'+str(id)))
+            if os.path.isfile(os.path.join(result_dir, "{}.mp4".format(i))):
+                shutil.move(
+                    os.path.join(result_dir, "{}.mp4".format(i)),
+                    os.path.join(fail_res_dir, "{}.mp4".format(i+'_'+str(id))),
                 )
+                if save_html:
+                    save_html.write_html(
+                        os.path.join(fail_res_dir, "{}.html".format(i+'_'+str(id)))
+                    )
 
     # result analysis
     final_result = 0

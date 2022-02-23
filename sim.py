@@ -39,6 +39,7 @@ class PybulletSim():
         self.transform_start_to_link = None
         self.normal_to_link = None
         self.link_id = None
+        self.video_writer = None
 
         self.toy_joint_vals = {
             'toy1': np.array(pickle.load(open('assets/toy1_joints.pkl', 'rb'))),
@@ -83,6 +84,22 @@ class PybulletSim():
         segmentation_mask = np.array(camera_data[4], int).reshape(self._scene_cam_image_size)
         
         return color_image, depth_image, segmentation_mask, cam_pose_matrix, cam_view_matrix
+
+    def save_render(self, color_image, id, result_dir):
+        """
+        Save the simlulator rendered image to disk for videos
+        """
+        if self.video_writer is None:
+            import cv2
+            video_file = result_dir
+            video_file = os.path.join(result_dir, f"{id}.mp4")
+            self.video_writer = cv2.VideoWriter(
+                    video_file,
+                    cv2.VideoWriter_fourcc(*"mp4v"),
+                    20,
+                    (color_image.shape[1], color_image.shape[0]),
+                )
+        self.video_writer.write(np.uint8(color_image * 255))
 
 
     def get_reward(self):
