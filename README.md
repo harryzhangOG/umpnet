@@ -1,3 +1,17 @@
+# Modified Columbia's code to test FlowBot 3D in PyBullet for a fair comparison
+## Usage
+To obtain the point cloud observation data, go to `test_flowbot3d.py` for reference. Then look at the fuction `get_pointcloud` from `utils.py` to transform depth images to point cloud data.
+Example :
+```Python 
+pcd = get_pointcloud(observation['image'][:, :, -1], observation['image'], sim.segmentation_mask, sim._scene_cam_intrinsics, sim.cam_pose_matrix)[0]
+downsample = pcd[:, 2]>1e-2
+segmask = np.zeros_like(sim.link_id_pts)
+segmask[np.where(sim.link_id_pts == sim.selected_joint)] = 1
+segmask = segmask[downsample]
+segmask = segmask.astype('bool')
+```
+
+
 # UMPNet: Universal Manipulation Policy Network for Articulated Objects
 
 
