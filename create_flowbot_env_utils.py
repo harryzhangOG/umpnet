@@ -41,7 +41,7 @@ def create_train_envs():
             # scene = trimesh.Scene([trimesh.points.PointCloud(pcd), trimesh.points.PointCloud(pcd+flow, colors=(255,0,0))])
             # scene.show()
 
-def create_train_env_by_id(obj_id):
+def create_env_by_id(obj_id):
     train_data = get_train_instances(open('mobility_dataset/split-full.json'))
     val_data = get_val_instances(open('mobility_dataset/split-full.json'))
     test_data = get_test_instances(open('mobility_dataset/split-full.json'))
