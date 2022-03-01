@@ -3,6 +3,7 @@ import json
 import os
 import pickle
 import sys
+from unicodedata import category
 from scipy.spatial.transform import Rotation as R
 sys.path.append('/home/harry/discriminative_embeddings')
 
@@ -37,8 +38,37 @@ def create_train_envs():
         for link in segmasks.keys(): 
             flow = transform_pcd(sim, pcd, segmasks[link], pm_obj.get_chain(link), 0.1)
             flow_all[link] = flow
-            scene = trimesh.Scene([trimesh.points.PointCloud(pcd), trimesh.points.PointCloud(pcd+flow, colors=(255,0,0))])
-            scene.show()
+            # scene = trimesh.Scene([trimesh.points.PointCloud(pcd), trimesh.points.PointCloud(pcd+flow, colors=(255,0,0))])
+            # scene.show()
+
+def create_train_env_by_id(obj_id):
+    train_data = get_train_instances(open('mobility_dataset/split-full.json'))
+    val_data = get_val_instances(open('mobility_dataset/split-full.json'))
+    test_data = get_test_instances(open('mobility_dataset/split-full.json'))
+    sim = PybulletSim(False, 0.18)
+    for cat in train_data.keys():
+        if obj_id in train_data[cat]:
+            category_type = 'train'
+            instance_type = 'train'
+    for cat in val_data.keys():
+        if obj_id in val_data[cat]:
+            category_type = 'train'
+            instance_type = 'test'
+    for cat in test_data.keys():
+        if obj_id in test_data[cat]:
+            category_type = 'test'
+            instance_type = 'test'
+
+    observation = sim.reset(scene_state=None, category_type=category_type, instance_type=instance_type, category_name=cat, instance_id=obj_id)
+    pcd = get_pointcloud(observation['image'][:, :, -1], observation['image'], sim.segmentation_mask, sim._scene_cam_intrinsics, sim.cam_pose_matrix)[0]
+    pcd, segmasks = post_process_pcd(sim, pcd)
+    dataset_path = os.path.expanduser("~/umpnet/mobility_dataset")
+    obj_urdf = os.path.join(dataset_path, cat, obj_id, "mobility.urdf")
+    pm_obj = parse_urdf(obj_urdf)
+    flow_all = {}
+    for link in segmasks.keys(): 
+        flow = transform_pcd(sim, pcd, segmasks[link], pm_obj.get_chain(link), 0.1)
+        flow_all[link] = flow
 
 
 def get_link_name(sim, joint_id):
