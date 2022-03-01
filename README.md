@@ -11,6 +11,8 @@ segmask = segmask[downsample]
 segmask = segmask.astype('bool')
 ```
 
+To get ground truth flows (for all parts) from the PyBullet Env, checkout `create_env_by_id` and `create_train_envs` functions in `create_flowbot_env_utils.py` for example. You just need to feed in the environment id and you get segmented pointcloud (3x1200) and flow vectors for all parts (dictionary whose keys are `link_id`s).
+
 
 # UMPNet: Universal Manipulation Policy Network for Articulated Objects
 
