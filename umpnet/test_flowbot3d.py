@@ -10,13 +10,11 @@ import torch
 from tqdm import trange
 from part_embedding.flow_prediction.latest_models import load_model
 from part_embedding.flow_prediction.animate import FlowNetAnimation
-from utils import get_pointcloud
+from umpnet.utils import get_pointcloud
 import shutil
 
-import spherical_sampling
-from model import Model
-from sim import PybulletSim
-from utils import project_pts_to_2d
+from umpnet.sim import PybulletSim
+from umpnet.utils import project_pts_to_2d
 
 step_num_dict = {
     'Refrigerator': 12,
@@ -45,14 +43,14 @@ step_num_dict = {
 
 
 def main():
-    model_name = 'nomask_multiview'
+    model_name = 'flowbot-in-ump'
     mobility_path = 'mobility_dataset'
     split_file = 'split-full.json'
     split_meta = json.load(open(os.path.join(mobility_path, split_file), 'r'))
 
     # Load model
     device = torch.device(f'cuda:0')
-    model = load_moel(model_name, False)
+    model = load_model(model_name, False)
     model = model.to('cuda')
 
     print('==> FlowBot3D model loaded')

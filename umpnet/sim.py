@@ -11,7 +11,7 @@ import pybullet_utils.bullet_client as bc
 import sys
 sys.path.insert(1, "/home/harry/umpnet")
 import umpnet.sim_utils as sim_utils
-import utils
+import umpnet.utils as utils
 
 
 class PybulletSim():
