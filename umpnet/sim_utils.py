@@ -4,7 +4,7 @@ import pickle
 
 import numpy as np
 
-mobility_path = 'mobility_dataset'
+mobility_path = '/home/harry/umpnet/mobility_dataset'
 split_file = 'split-full.json'
 split_meta = json.load(open(os.path.join(mobility_path, split_file), 'r'))
 

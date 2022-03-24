@@ -52,7 +52,7 @@ def main():
 
     # Load model
     device = torch.device(f'cuda:0')
-    model = load_model(model_name, False)
+    model = load_moel(model_name, False)
     model = model.to('cuda')
 
     print('==> FlowBot3D model loaded')
@@ -142,11 +142,13 @@ def predict_flow_gtmask_after(sim, observation, model, reverse):
 
     segmask = segmask[filter]
     pcd = pcd[downsample][filter]
-    xyz = pcd - pcd.mean(axis=-2)
-    scale = (1 / np.abs(xyz).max()) * 0.999999
-    xyz = xyz * scale
-    xyz = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])@xyz.T
-    xyz = xyz.T
+    # xyz = pcd - pcd.mean(axis=-2)
+    # scale = (1 / np.abs(xyz).max()) * 0.999999
+    # xyz = xyz * scale
+    # xyz = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])@xyz.T
+    # xyz = xyz.T
+
+    xyz = pcd
 
     pred_flow = model.predict(
         torch.from_numpy(xyz).to("cuda"),
@@ -161,7 +163,7 @@ def predict_flow_gtmask_after(sim, observation, model, reverse):
     return pred_flow, segmask, pcd, xyz
 
 def run_test(model, category_type, category_name, instance_type):
-    result_dir = os.path.join('/home/harry/discriminative_embeddings/umpmetric_results_master', 'nomask_mv_in_umpnet_official')
+    result_dir = os.path.join('/home/harry/discriminative_embeddings/umpmetric_results_master', 'flownet_in_umpnet_official')
     if not os.path.exists(result_dir):
         print("Creating result directory")
         os.makedirs(result_dir, exist_ok=True)

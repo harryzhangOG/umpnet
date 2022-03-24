@@ -8,8 +8,9 @@ import open3d as o3d
 import pybullet
 import pybullet_data
 import pybullet_utils.bullet_client as bc
-
-import sim_utils
+import sys
+sys.path.insert(1, "/home/harry/umpnet")
+import umpnet.sim_utils as sim_utils
 import utils
 
 
