@@ -312,6 +312,7 @@ class PybulletSim():
         self.bc.setGravity(0, 0, 0)
         self._plane_id = self.bc.loadURDF("assets/plane/plane.urdf")
         self._suction_gripper = None
+        self.video_writer = None
 
         # Initialization
         self.joint_states = dict()
@@ -485,7 +486,7 @@ class PybulletSim():
             self._move_to(position_end, sleep=self.gui, speed_ratio=1)
 
             # this step is to make the ee aligned again
-            self._move_to(self.get_suction_target_position(), sleep=self.gui, speed_ratio=10)
+            # self._move_to(self.get_suction_target_position(), sleep=self.gui, speed_ratio=10)
             
             if self.gui:
                 self.bc.removeAllUserDebugItems()
