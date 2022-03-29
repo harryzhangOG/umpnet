@@ -335,7 +335,7 @@ def run_test(model, category_type, category_name, instance_type):
                     results[f"sequence-{id}"] = step
                     print("DONE")
                     for s in range(step, max_step_num + 1):
-                        results[f"dist2target-{id}-{s}"] = info["dist2init"]
+                        results[f"dist2target-{id}-{s}"] = 0
 
                     break
         save_html = animation_module.animate()
