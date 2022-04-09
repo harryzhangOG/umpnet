@@ -185,7 +185,7 @@ def predict_flow_gtmask_after(sim, observation, model, reverse):
 def run_test(model, category_type, category_name, instance_type):
     result_dir = os.path.join(
         "/home/harry/discriminative_embeddings/umpmetric_results_master",
-        "flownet_in_umpnet_official",
+        "flownet_in_umpnet_official_balanced",
     )
     if not os.path.exists(result_dir):
         print("Creating result directory")
@@ -279,8 +279,16 @@ def run_test(model, category_type, category_name, instance_type):
         # direction inference
         max_step_num = 2 * step_num_dict[category_name]
         for step in range(1, max_step_num + 1):
-            ee_pos = np.array([sim.bc.getJointState(sim._suction_gripper, joint_id)[0] for joint_id in [0, 1, 2]]) + sim._mount_base_position
-            print('Gripper loc: ', ee_pos)
+            ee_pos = (
+                np.array(
+                    [
+                        sim.bc.getJointState(sim._suction_gripper, joint_id)[0]
+                        for joint_id in [0, 1, 2]
+                    ]
+                )
+                + sim._mount_base_position
+            )
+            print("Gripper loc: ", ee_pos)
             print(f"Step: {step}")
             if reach_init:
                 results[f"dist2target-{id}-{step}"] = 0
