@@ -5,6 +5,7 @@ import pickle
 import sys
 
 sys.path.append("/home/harry/discriminative_embeddings")
+sys.path.append("/home/harry/umpnet")
 
 import numpy as np
 import torch
@@ -61,9 +62,9 @@ def main():
     pool_list = list()
     for category_type in ["train", "test"]:
         for category_name in split_meta[category_type].keys():
-            # if category_name not in ['Refrigerator', 'FoldingChair', 'Laptop', 'Stapler']:
-            #     print('Skipping Category...')
-            #     continue
+            if category_name not in ["Door"]:
+                print("Skipping Category...")
+                continue
             instance_type = "test"
             pool_list.append((category_type, category_name, instance_type))
 
@@ -185,7 +186,7 @@ def predict_flow_gtmask_after(sim, observation, model, reverse):
 def run_test(model, category_type, category_name, instance_type):
     result_dir = os.path.join(
         "/home/harry/discriminative_embeddings/umpmetric_results_master",
-        "flownet_in_umpnet_official_balanced",
+        "flownet_in_umpnet_official_balanced_door",
     )
     if not os.path.exists(result_dir):
         print("Creating result directory")
@@ -234,7 +235,7 @@ def run_test(model, category_type, category_name, instance_type):
 
         animation_module.add_trace(
             torch.as_tensor(pcd),
-            torch.as_tensor([pcd[segmask]]),
+            # torch.as_tensor([pcd[segmask]]),
             torch.as_tensor([pred_flow] / np.linalg.norm(pred_flow[max_flow_idx])),
             "red",
         )
@@ -321,7 +322,7 @@ def run_test(model, category_type, category_name, instance_type):
                 print(action)
                 animation_module.add_trace(
                     torch.as_tensor(pcd),
-                    torch.as_tensor([pcd[segmask]]),
+                    # torch.as_tensor([pcd[segmask]]),
                     torch.as_tensor(
                         [pred_flow] / np.linalg.norm(pred_flow[max_flow_idx])
                     ),
