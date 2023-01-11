@@ -2,21 +2,17 @@ import argparse
 import json
 import os
 import pickle
+import shutil
 import sys
-
-sys.path.append("/home/harry/discriminative_embeddings")
-sys.path.append("/home/harry/umpnet")
 
 import numpy as np
 import torch
 from tqdm import trange
-from part_embedding.flow_prediction.latest_models import load_model
-from part_embedding.flow_prediction.animate import FlowNetAnimation
-from umpnet.utils import get_pointcloud
-import shutil
-
 from umpnet.sim import PybulletSim
-from umpnet.utils import project_pts_to_2d
+from umpnet.utils import get_pointcloud, project_pts_to_2d
+
+from flowbot3d.flow_prediction.animate import FlowNetAnimation
+from flowbot3d.flow_prediction.latest_models import load_model
 
 step_num_dict = {
     "Refrigerator": 12,
